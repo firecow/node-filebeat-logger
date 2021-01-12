@@ -16,5 +16,5 @@ npm install --save filebeat-logger
 const filebeatLogger = require('filebeat-logger')
 const logger = filebeatLogger.create('info', ['@timestamp', 'message'], ['error', 'warn']);
 
-logger.info('I am a info message')
+logger.info('I am an info message')
 ```
