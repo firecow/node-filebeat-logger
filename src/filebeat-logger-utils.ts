@@ -1,0 +1,52 @@
+export class FilebeatLoggerUtils {
+
+    static addEcsFields(info: { [key: string]: string }): void {
+        info['@timestamp'] = `${new Date().toISOString()}`;
+        info['log.level'] = info['level'];
+        delete info['level'];
+    }
+
+    static addEnvironmentTag(info: { [key: string]: string }, appEnvironment: string | undefined = process.env.APP_ENV): void {
+        if (appEnvironment) {
+            const tagList = info['tags'] ? info['tags'].split(',') : [];
+            tagList.push(appEnvironment);
+            info['tags'] = tagList.join(', ');
+        }
+    }
+
+    static explodeJsonInMessage(info: { [key: string]: string }): void {
+        const message = info['message'];
+        try {
+            const exploded = JSON.parse(message);
+            if (exploded instanceof Object && !(exploded instanceof Array)) {
+                Object.keys(exploded).forEach(function (key) {
+                    info[key] = exploded[key];
+                });
+            }
+        } catch (e) {
+            // JSON parse fails, therefore message cannot be exploded, carry on
+        }
+    }
+
+    static orderKeys(info: { [key: string]: string }, keysOrder: string[]): void {
+        const ordered: { [key: string]: string; } = {};
+        const orderedKeys: string[] = Object.keys(info).sort((a, b) => {
+            if (keysOrder.indexOf(a) !== keysOrder.indexOf(b)) {
+                return keysOrder.indexOf(a) - keysOrder.indexOf(b);
+            }
+            return b.localeCompare(a);
+        });
+
+        for (const key of orderedKeys) {
+            ordered[key] = info[key];
+        }
+
+        for (const key of Object.keys(info)) {
+            delete info[key];
+        }
+
+        for (const [key, value] of Object.entries(ordered)) {
+            info[key] = value;
+        }
+    }
+}

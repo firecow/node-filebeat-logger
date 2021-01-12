@@ -1,0 +1,5 @@
+*
+!src/**/*.d.ts
+!src/**/*.js
+src/**/*.test.d.ts
+src/**/*.test.js
