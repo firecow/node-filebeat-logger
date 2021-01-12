@@ -3,6 +3,10 @@ A winston logger that prints json lines in elastic common schema format
 
 ---
 
+[![License][license-image]][license-url]
+
+---
+
 ## Install
 ```sh
 npm install --save filebeat-logger
