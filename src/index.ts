@@ -1,5 +1,4 @@
 import * as winston from 'winston';
-import {TransformableInfo} from "logform";
 
 export class FilebeatLogger {
 
@@ -18,8 +17,6 @@ export class FilebeatLogger {
                     addEnvironmentTag(info, appEnvironment);
                     explodeJsonInMessage(info);
                     orderKeys(info, keysOrder);
-                    // const log = {...info};
-                    // delete log['level'];
                     return JSON.stringify(info);
                 }),
                 stderrLevels: stdErrorLevels,
@@ -29,12 +26,13 @@ export class FilebeatLogger {
 
 }
 
-export function addEcsFields(info: TransformableInfo): void {
+export function addEcsFields(info: {[key: string]: string}): void {
     info['@timestamp'] = `${new Date().toISOString()}`;
     info['log.level'] = info['level'];
+    delete info['level'];
 }
 
-export function addEnvironmentTag(info: TransformableInfo, appEnvironment: string|undefined = process.env.APP_ENV): void {
+export function addEnvironmentTag(info: {[key: string]: string}, appEnvironment: string|undefined = process.env.APP_ENV): void {
     if (appEnvironment) {
         const tagList = info['tags'] ? info['tags'].split(',') : [];
         tagList.push(appEnvironment);
@@ -42,7 +40,7 @@ export function addEnvironmentTag(info: TransformableInfo, appEnvironment: strin
     }
 }
 
-export function explodeJsonInMessage(info: TransformableInfo): void {
+export function explodeJsonInMessage(info: {[key: string]: string}): void {
     const message = info['message'];
     try {
         const exploded = JSON.parse(message);
@@ -56,7 +54,7 @@ export function explodeJsonInMessage(info: TransformableInfo): void {
     }
 }
 
-export function orderKeys(info: TransformableInfo, order: string[]): void {
+export function orderKeys(info: {[key: string]: string}, order: string[]): void {
     const ordered: { [key: string]: string; } = {};
     const keysOrder = order.reverse();
     const orderedKeys: string[] = Object.keys(info).sort((a, b) => {
