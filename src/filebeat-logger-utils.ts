@@ -31,10 +31,7 @@ export class FilebeatLoggerUtils {
     static orderKeys(info: { [key: string]: string }, keysOrder: string[]): void {
         const ordered: { [key: string]: string; } = {};
         const orderedKeys: string[] = Object.keys(info).sort((a, b) => {
-            if (keysOrder.indexOf(a) !== keysOrder.indexOf(b)) {
-                return keysOrder.indexOf(a) - keysOrder.indexOf(b);
-            }
-            return b.localeCompare(a);
+            return keysOrder.indexOf(a) - keysOrder.indexOf(b);
         });
 
         for (const key of orderedKeys) {
