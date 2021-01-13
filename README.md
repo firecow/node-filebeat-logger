@@ -6,8 +6,6 @@ A winston logger that prints json lines in elastic common schema format
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://npmjs.org/package/filebeat-logger)
 [![npm package](https://badge.fury.io/js/filebeat-logger.svg)](https://npmjs.org/package/filebeat-logger)
 
-[![NPM](https://nodei.co/npm/filebeat-logger.png?mini=true)](https://npmjs.org/package/filebeat-logger)
-
 ---
 
 ## Install
