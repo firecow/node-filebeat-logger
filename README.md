@@ -1,10 +1,12 @@
 # filebeat-logger
 A winston logger that prints json lines in elastic common schema format
 
-![coverage](coverage/badge.svg)
-![build](https://github.com/firecow/node-filebeat-logger/workflows/build/badge.svg)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![npm package](https://badge.fury.io/js/filebeat-logger.svg)
+[![coverage](coverage/badge.svg)](https://npmjs.org/package/filebeat-logger)
+[![build](https://github.com/firecow/node-filebeat-logger/workflows/build/badge.svg)](https://npmjs.org/package/filebeat-logger)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://npmjs.org/package/filebeat-logger)
+[![npm package](https://badge.fury.io/js/filebeat-logger.svg)](https://npmjs.org/package/filebeat-logger)
+
+[![NPM](https://nodei.co/npm/filebeat-logger.png?mini=true)](https://npmjs.org/package/filebeat-logger)
 
 ---
 
