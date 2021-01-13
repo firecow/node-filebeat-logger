@@ -1,6 +1,6 @@
 {
   "name": "filebeat-logger",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A winston logger that prints json lines in elastic common schema format",
   "main": "src/index.js",
   "types": "src/index.d.ts",
