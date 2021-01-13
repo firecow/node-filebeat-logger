@@ -4,6 +4,23 @@ export class FilebeatLoggerUtils {
         info['@timestamp'] = `${new Date().toISOString()}`;
         info['log.level'] = info['level'];
         delete info['level'];
+
+        if (info['stack']) {
+            info['error.stack_trace'] = info['stack'];
+            delete info['stack'];
+        }
+    }
+
+    static expandError(info: { [key: string]: string }): void {
+        const err: unknown = info['error'] || info['err'];
+        if (err instanceof Error) {
+            info['error.message'] = err.message;
+            if (err.stack) {
+                info['error.stack_trace'] = err.stack;
+            }
+            delete info['error'];
+            delete info['err'];
+        }
     }
 
     static addEnvironmentTag(info: { [key: string]: string }, appEnvironment: string | undefined = process.env.APP_ENV): void {

@@ -75,9 +75,19 @@ test('Check log level error', () => {
     expect(spyStdout).toBeCalledTimes(0)
 })
 
-test('Meta data ordering', () => {
+test('Meta ordering', () => {
     const logger = create({logLevel: 'debug'});
     logger.debug('Text Message', {'error.message': 'Heyaa'});
     expect(spyStdout).toBeCalledTimes(1)
     expect(spyStdout).toHaveBeenLastCalledWith(`{"@timestamp":"2019-05-14T11:01:58.135Z","message":"Text Message","log.level":"debug","error.message":"Heyaa"}\n`);
+})
+
+test('Expand meta err or error', () => {
+    const logger = create({logLevel: 'error'});
+    const err = new Error("Test Error");
+    err.stack = "Error: Test Error\nTest Stack Trace"
+    logger.error('', { err });
+    expect(spyStderr).toBeCalledTimes(1)
+    const expected = `{"@timestamp":"2019-05-14T11:01:58.135Z","message":"","log.level":"error","error.message":"Test Error","error.stack_trace":"Error: Test Error\\nTest Stack Trace"}\n`;
+    expect(spyStderr).toHaveBeenLastCalledWith(expected);
 })

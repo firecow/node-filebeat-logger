@@ -17,6 +17,7 @@ export class FilebeatLoggerTransport extends Transport {
         this.format = format(function(info) {
             FilebeatLoggerUtils.addEcsFields(info);
             FilebeatLoggerUtils.addEnvironmentTag(info, options.appEnvironment);
+            FilebeatLoggerUtils.expandError(info);
             FilebeatLoggerUtils.explodeJsonInMessage(info);
             FilebeatLoggerUtils.orderKeys(info, options.keysOrder);
             return info;
