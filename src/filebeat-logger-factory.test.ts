@@ -74,3 +74,10 @@ test('Check log level error', () => {
     expect(spyStderr).toBeCalledTimes(1)
     expect(spyStdout).toBeCalledTimes(0)
 })
+
+test('Meta data ordering', () => {
+    const logger = create({logLevel: 'debug'});
+    logger.debug('Text Message', {'error.message': 'Heyaa'});
+    expect(spyStdout).toBeCalledTimes(1)
+    expect(spyStdout).toHaveBeenLastCalledWith(`{"@timestamp":"2019-05-14T11:01:58.135Z","message":"Text Message","log.level":"debug","error.message":"Heyaa"}\n`);
+})

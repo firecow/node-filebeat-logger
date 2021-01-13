@@ -35,7 +35,7 @@ test('Explode json in message', () => {
 });
 
 test('Order keys of object', () => {
-    const info = {level: 'info', message: 'Test'};
+    const info = {'error.message': 'Heya', level: 'info', message: 'Test'};
     FilebeatLoggerUtils.orderKeys(info, ['message', 'level']);
-    expect(Object.keys(info)).toStrictEqual(['message', 'level']);
+    expect(Object.keys(info)).toStrictEqual(['message', 'level', 'error.message']);
 });

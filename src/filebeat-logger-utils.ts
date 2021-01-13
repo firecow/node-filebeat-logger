@@ -30,8 +30,9 @@ export class FilebeatLoggerUtils {
 
     static orderKeys(info: { [key: string]: string }, keysOrder: string[]): void {
         const ordered: { [key: string]: string; } = {};
+        const reverseKeysOrder = keysOrder.slice().reverse();
         const orderedKeys: string[] = Object.keys(info).sort((a, b) => {
-            return keysOrder.indexOf(a) - keysOrder.indexOf(b);
+            return reverseKeysOrder.indexOf(b) - reverseKeysOrder.indexOf(a);
         });
 
         for (const key of orderedKeys) {
