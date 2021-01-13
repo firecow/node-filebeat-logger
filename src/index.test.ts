@@ -1,6 +1,7 @@
-import {create} from './index'
+import {FilebeatLoggerUtils} from './filebeat-logger-utils'
 
 import MockDate from 'mockdate'
+import {create} from "./filebeat-logger-factory";
 
 const spyStdout = jest.spyOn(process.stdout, 'write').mockImplementation();
 const spyStderr = jest.spyOn(process.stderr, 'write').mockImplementation();
@@ -16,6 +17,7 @@ afterAll(() => {
     spyStderr.mockRestore();
     MockDate.reset();
 })
+
 
 test('Check logger debug default streams', () => {
     const logger = create({logLevel: 'debug'});
@@ -91,3 +93,35 @@ test('Expand meta err or error', () => {
     const expected = `{"@timestamp":"2019-05-14T11:01:58.135Z","message":"","log.level":"error","error.message":"Test Error","error.stack_trace":"Error: Test Error\\nTest Stack Trace"}\n`;
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 })
+
+test('Add ECS fields', () => {
+    const info = {level: 'info', message: 'lålå'};
+    FilebeatLoggerUtils.addEcsFields(info);
+    expect(info).toStrictEqual({'@timestamp': "2019-05-14T11:01:58.135Z", 'log.level': 'info', 'message': 'lålå'});
+});
+
+test('Add $APP_ENV to ecs tags', () => {
+    const info = {level: 'info', message: 'lålå'};
+    process.env.APP_ENV = 'stage';
+    FilebeatLoggerUtils.addEnvironmentTag(info);
+    expect(info).toStrictEqual({'level': 'info', 'message': 'lålå', 'tags': "stage"});
+});
+
+test('Add $APP_ENV to existing ecs tags', () => {
+    const info = {level: 'info', message: 'lålå', tags: 'city'};
+    process.env.APP_ENV = 'prod';
+    FilebeatLoggerUtils.addEnvironmentTag(info);
+    expect(info).toStrictEqual({'level': 'info', 'message': 'lålå', 'tags': "city, prod"});
+});
+
+test('Explode json in message', () => {
+    const info = {level: 'info', message: '{"log.logger": "system"}'};
+    FilebeatLoggerUtils.explodeJsonInMessage(info);
+    expect(info).toStrictEqual({'level': 'info', 'message': '{"log.logger": "system"}', 'log.logger': "system"});
+});
+
+test('Order keys of object', () => {
+    const info = {'error.message': 'Heya', level: 'info', message: 'Test'};
+    FilebeatLoggerUtils.orderKeys(info, ['message', 'level']);
+    expect(Object.keys(info)).toStrictEqual(['message', 'level', 'error.message']);
+});

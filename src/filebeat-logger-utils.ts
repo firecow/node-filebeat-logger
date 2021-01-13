@@ -4,11 +4,6 @@ export class FilebeatLoggerUtils {
         info['@timestamp'] = `${new Date().toISOString()}`;
         info['log.level'] = info['level'];
         delete info['level'];
-
-        if (info['stack']) {
-            info['error.stack_trace'] = info['stack'];
-            delete info['stack'];
-        }
     }
 
     static expandError(info: { [key: string]: string }): void {
