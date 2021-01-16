@@ -3,7 +3,7 @@ A winston logger that prints json lines in elastic common schema format
 
 [![coverage](coverage/badge.svg)](https://npmjs.org/package/filebeat-logger)
 [![build](https://github.com/firecow/node-filebeat-logger/workflows/build/badge.svg)](https://npmjs.org/package/filebeat-logger)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://npmjs.org/package/filebeat-logger)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://npmjs.org/package/filebeat-logger)
 [![npm](https://img.shields.io/npm/v/filebeat-logger?color=green)](https://npmjs.org/package/filebeat-logger)
 ---
 
