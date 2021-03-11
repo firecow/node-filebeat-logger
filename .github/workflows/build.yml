@@ -28,7 +28,7 @@ jobs:
       - name: Install modules
         run: npm install
       - name: Run depcheck
-        run: npx depcheck --ignores depcheck
+        run: npm run depcheck
 
   jest:
     runs-on: ubuntu-latest
