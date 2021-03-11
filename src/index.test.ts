@@ -102,14 +102,14 @@ test('Add ECS fields', () => {
 
 test('Add $APP_ENV to ecs tags', () => {
     const info = {level: 'info', message: 'lålå'};
-    process.env.APP_ENV = 'stage';
+    process.env['APP_ENV'] = 'stage';
     FilebeatLoggerUtils.addEnvironmentTag(info);
     expect(info).toStrictEqual({'level': 'info', 'message': 'lålå', 'tags': "stage"});
 });
 
 test('Add $APP_ENV to existing ecs tags', () => {
     const info = {level: 'info', message: 'lålå', tags: 'city'};
-    process.env.APP_ENV = 'prod';
+    process.env['APP_ENV'] = 'prod';
     FilebeatLoggerUtils.addEnvironmentTag(info);
     expect(info).toStrictEqual({'level': 'info', 'message': 'lålå', 'tags': "city, prod"});
 });

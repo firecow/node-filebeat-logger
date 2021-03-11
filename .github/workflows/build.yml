@@ -1,27 +1,52 @@
+---
 name: build
 on: push
 jobs:
+
   eslint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install modules
-        run: yarn
+        run: npm install
       - name: Run ESLint
-        run: yarn eslint .
+        run: npm run lint
+
   typescript-compile:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install modules
-        run: yarn
+        run: npm install
       - name: Run Typescipt Compiler
-        run: yarn tsc
-  jest:
+        run: npm run build
+
+  unused-deps:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install modules
-        run: yarn
+        run: npm install
+      - name: Run depcheck
+        run: npx depcheck --ignores depcheck
+
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install modules
+        run: npm install
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: Run tests
-        run: yarn test
+        run: npm run coverage
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

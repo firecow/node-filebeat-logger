@@ -1,6 +1,6 @@
 export class FilebeatLoggerUtils {
 
-    static addEcsFields(info: { [key: string]: string }): void {
+    static addEcsFields(info: { [key: string]: string|undefined }): void {
         info['@timestamp'] = `${new Date().toISOString()}`;
         info['log.level'] = info['level'];
         delete info['level'];
@@ -18,7 +18,7 @@ export class FilebeatLoggerUtils {
         }
     }
 
-    static addEnvironmentTag(info: { [key: string]: string }, appEnvironment: string | undefined = process.env.APP_ENV): void {
+    static addEnvironmentTag(info: { [key: string]: string }, appEnvironment: string | undefined = process.env['APP_ENV']): void {
         if (appEnvironment) {
             const tagList = info['tags'] ? info['tags'].split(',') : [];
             tagList.push(appEnvironment);
@@ -27,7 +27,7 @@ export class FilebeatLoggerUtils {
     }
 
     static explodeJsonInMessage(info: { [key: string]: string }): void {
-        const message = info['message'];
+        const message = info['message'] ?? "";
         try {
             const exploded = JSON.parse(message);
             if (exploded instanceof Object && !(exploded instanceof Array)) {
@@ -40,8 +40,8 @@ export class FilebeatLoggerUtils {
         }
     }
 
-    static orderKeys(info: { [key: string]: string }, keysOrder: string[]): void {
-        const ordered: { [key: string]: string; } = {};
+    static orderKeys(info: { [key: string]: string|undefined }, keysOrder: string[]): void {
+        const ordered: { [key: string]: string|undefined; } = {};
         const reverseKeysOrder = keysOrder.slice().reverse();
         const orderedKeys: string[] = Object.keys(info).sort((a, b) => {
             return reverseKeysOrder.indexOf(b) - reverseKeysOrder.indexOf(a);

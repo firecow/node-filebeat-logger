@@ -9,6 +9,6 @@ export function optionDefaults(): { keysOrder: string[], stderrLevels: string[],
     return {
         keysOrder: ['@timestamp', 'message', 'log.level'],
         stderrLevels: ['error', 'warn', 'warning'],
-        appEnvironment: process.env.APP_ENV
+        appEnvironment: process.env['APP_ENV']
     }
 }
