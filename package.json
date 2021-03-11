@@ -11,7 +11,7 @@
   "scripts": {
     "prepublishOnly": "npm run depcheck && npm run build && npm run lint && npm run test",
     "build": "tsc",
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint .",
     "depcheck": "depcheck --ignores @types/jest"
   },
