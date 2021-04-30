@@ -10,11 +10,11 @@ export class FilebeatLoggerTransport extends Transport {
     constructor(optOptions?: FilebeatLoggerOptions) {
         super();
 
-        const options = {...optionDefaults(), ...optOptions}
+        const options = {...optionDefaults(), ...optOptions};
 
         this.stderrLevels = options.stderrLevels;
 
-        this.format = format(function(info) {
+        this.format = format(function (info) {
             FilebeatLoggerUtils.addEcsFields(info);
             FilebeatLoggerUtils.addEnvironmentTag(info, options.appEnvironment);
             FilebeatLoggerUtils.expandError(info);
@@ -24,9 +24,9 @@ export class FilebeatLoggerTransport extends Transport {
         })();
     }
 
-    log(info: { 'log.level': string }, next: () => void): void {
-        const stream = this.stderrLevels.includes(info['log.level']) ? process.stderr : process.stdout;
-        stream.write(JSON.stringify(info) + '\n');
+    log(info: { "log.level": string }, next: () => void): void {
+        const stream = this.stderrLevels.includes(info["log.level"]) ? process.stderr : process.stdout;
+        stream.write(JSON.stringify(info) + "\n");
         next();
     }
 }
