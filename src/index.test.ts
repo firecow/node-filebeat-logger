@@ -48,7 +48,7 @@ test("Check logger error default streams", () => {
 });
 
 test("Check log level info", () => {
-    const logger = create({logLevel: "info"});
+    const logger = create({});
     logger.debug("Text Message");
     logger.info("Text Message");
     logger.warn("Text Message");
@@ -78,10 +78,10 @@ test("Check log level error", () => {
 });
 
 test("Meta ordering", () => {
-    const logger = create({logLevel: "debug"});
-    logger.debug("Text Message", {"error.message": "Heyaa"});
+    const logger = create();
+    logger.info("Text Message", {"error.message": "Heyaa"});
     expect(spyStdout).toBeCalledTimes(1);
-    expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"debug\",\"error.message\":\"Heyaa\"}\n");
+    expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"info\",\"error.message\":\"Heyaa\"}\n");
 });
 
 test("Expand meta err or error", () => {
@@ -91,6 +91,16 @@ test("Expand meta err or error", () => {
     logger.error("", {err});
     expect(spyStderr).toBeCalledTimes(1);
     const expected = "{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"\",\"log.level\":\"error\",\"error.message\":\"Test Error\",\"error.stack_trace\":\"Error: Test Error\\nTest Stack Trace\"}\n";
+    expect(spyStderr).toHaveBeenLastCalledWith(expected);
+});
+
+test("Expand error without stack", () => {
+    const logger = create({logLevel: "error"});
+    const err = new Error("Test Error");
+    delete err.stack;
+    logger.error("", {err});
+    expect(spyStderr).toBeCalledTimes(1);
+    const expected = "{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"\",\"log.level\":\"error\",\"error.message\":\"Test Error\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
 
@@ -114,10 +124,22 @@ test("Add $APP_ENV to existing ecs tags", () => {
     expect(info).toStrictEqual({"level": "info", "message": "lålå", "tags": "city, prod"});
 });
 
-test("Explode json in message", () => {
+test("JSON explode object in message", () => {
     const info = {level: "info", message: "{\"log.logger\": \"system\"}"};
     FilebeatLoggerUtils.explodeJsonInMessage(info);
     expect(info).toStrictEqual({"level": "info", "message": "{\"log.logger\": \"system\"}", "log.logger": "system"});
+});
+
+test("Don't json explode array in message", () => {
+    const info = {level: "info", message: "[{\"log.logger\": \"system\"}]"};
+    FilebeatLoggerUtils.explodeJsonInMessage(info);
+    expect(info).toStrictEqual({"level": "info", "message": "[{\"log.logger\": \"system\"}]"});
+});
+
+test("Explode json, but message undefined", () => {
+    const info = {level: "info"};
+    FilebeatLoggerUtils.explodeJsonInMessage(info);
+    expect(info).toStrictEqual({"level": "info"});
 });
 
 test("Order keys of object", () => {

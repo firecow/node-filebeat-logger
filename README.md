@@ -1,4 +1,3 @@
-# filebeat-logger
 A winston logger that prints json lines in elastic common schema format
 
 [![build](https://img.shields.io/github/workflow/status/firecow/node-filebeat-logger/build)](https://github.com/firecow/node-filebeat-logger/actions)
