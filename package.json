@@ -16,7 +16,7 @@
     "depcheck": "depcheck --ignores @types/jest"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
+    "@types/jest": "26.0.24",
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
