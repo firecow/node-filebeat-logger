@@ -18,6 +18,8 @@ export class FilebeatLoggerTransport extends Transport {
             FilebeatLoggerUtils.addEcsFields(info);
             FilebeatLoggerUtils.addEnvironmentTag(info, options.appEnvironment);
             FilebeatLoggerUtils.expandError(info);
+            FilebeatLoggerUtils.expandRequest(info);
+            FilebeatLoggerUtils.expandResponse(info);
             FilebeatLoggerUtils.explodeJsonInMessage(info);
             FilebeatLoggerUtils.orderKeys(info, options.keysOrder);
             return info;

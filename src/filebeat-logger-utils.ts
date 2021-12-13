@@ -18,6 +18,30 @@ export class FilebeatLoggerUtils {
         }
     }
 
+    static expandRequest(info: any): void {
+        const req: any = info["request"] || info["req"];
+        if (!req) return;
+
+        const protocol = req.headers["x-forwarded-proto"] ?? "https";
+        const url = new URL(req.url, `${protocol}://${req.headers.host}`);
+        info["url.path"] = url.pathname;
+        info["url.full"] = url.href;
+        info["url.domain"] = url.host;
+        info["url.query"] = url.search.substring(1);
+        info["url.scheme"] = url.protocol.slice(0, -1);
+        info["http.request.method"] = req.method && typeof req.method === "string" ? req.method.toUpperCase() : undefined;
+        delete info["request"];
+        delete info["req"];
+    }
+
+    static expandResponse(info: any): void {
+        const res: any = info["response"] || info["res"];
+        if (!res) return;
+        info["http.response.status_code"] = res.statusCode;
+        delete info["response"];
+        delete info["res"];
+    }
+
     static addEnvironmentTag(info: { [key: string]: string }, appEnvironment: string | undefined = process.env["APP_ENV"]): void {
         if (appEnvironment) {
             const tagList = info["tags"] ? info["tags"].split(",") : [];
@@ -40,8 +64,8 @@ export class FilebeatLoggerUtils {
         }
     }
 
-    static orderKeys(info: { [key: string]: string | undefined }, keysOrder: string[]): void {
-        const ordered: { [key: string]: string | undefined } = {};
+    static orderKeys(info: any, keysOrder: string[]): void {
+        const ordered: any = {};
         const reverseKeysOrder = keysOrder.slice().reverse();
         const orderedKeys: string[] = Object.keys(info).sort((a, b) => {
             return reverseKeysOrder.indexOf(b) - reverseKeysOrder.indexOf(a);

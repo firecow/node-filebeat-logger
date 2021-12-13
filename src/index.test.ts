@@ -147,3 +147,22 @@ test("Order keys of object", () => {
     FilebeatLoggerUtils.orderKeys(info, ["message", "level"]);
     expect(Object.keys(info)).toStrictEqual(["message", "level", "error.message"]);
 });
+
+test("Expand request (query params)", () => {
+    const info = {req: {url: "/some-path/?act=test", method: "post", headers: {host: "some-domain.com", "x-forwarded-proto": "https"}}};
+    FilebeatLoggerUtils.expandRequest(info);
+    expect(info).toStrictEqual({
+        "http.request.method": "POST",
+        "url.path": "/some-path/",
+        "url.full": "https://some-domain.com/some-path/?act=test",
+        "url.domain": "some-domain.com",
+        "url.query": "act=test",
+        "url.scheme": "https",
+    });
+});
+
+test("Expand response", () => {
+    const info = {res: { statusCode: 200}};
+    FilebeatLoggerUtils.expandResponse(info);
+    expect(info).toStrictEqual({"http.response.status_code": 200});
+});
