@@ -30,6 +30,7 @@ export class FilebeatLoggerUtils {
         info["url.query"] = url.search.substring(1);
         info["url.scheme"] = url.protocol.slice(0, -1);
         info["http.request.method"] = req.method && typeof req.method === "string" ? req.method.toUpperCase() : undefined;
+
         delete info["request"];
         delete info["req"];
     }
@@ -37,7 +38,9 @@ export class FilebeatLoggerUtils {
     static expandResponse(info: any): void {
         const res: any = info["response"] || info["res"];
         if (!res) return;
+
         info["http.response.status_code"] = res.statusCode;
+
         delete info["response"];
         delete info["res"];
     }
