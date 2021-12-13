@@ -1,12 +1,12 @@
 export class FilebeatLoggerUtils {
 
-    static addEcsFields(info: { [key: string]: string | undefined }): void {
+    static addEcsFields(info: any): void {
         info["@timestamp"] = `${new Date().toISOString()}`;
         info["log.level"] = info["level"];
         delete info["level"];
     }
 
-    static expandError(info: { [key: string]: string }): void {
+    static expandError(info: any): void {
         const err: unknown = info["error"] || info["err"];
         if (err instanceof Error) {
             info["error.message"] = err.message;
@@ -45,7 +45,7 @@ export class FilebeatLoggerUtils {
         delete info["res"];
     }
 
-    static addEnvironmentTag(info: { [key: string]: string }, appEnvironment: string | undefined = process.env["APP_ENV"]): void {
+    static addEnvironmentTag(info: any, appEnvironment: string | undefined = process.env["APP_ENV"]): void {
         if (appEnvironment) {
             const tagList = info["tags"] ? info["tags"].split(",") : [];
             tagList.push(appEnvironment);
@@ -53,7 +53,7 @@ export class FilebeatLoggerUtils {
         }
     }
 
-    static explodeJsonInMessage(info: { [key: string]: string }): void {
+    static explodeJsonInMessage(info: any): void {
         const message = info["message"] ?? "";
         try {
             const exploded = JSON.parse(message);
