@@ -58,6 +58,7 @@ jobs:
         with:
           path: 'node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+      - run: npm install
       - name: Run depcheck
         run: npm run depcheck
 
