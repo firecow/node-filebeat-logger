@@ -1,7 +1,7 @@
-import {FilebeatLoggerUtils} from "./filebeat-logger-utils";
+import {Utils} from "./utils";
 
 import MockDate from "mockdate";
-import {create} from "./filebeat-logger-factory";
+import {create} from "./factory";
 
 const spyStdout = jest.spyOn(process.stdout, "write").mockImplementation();
 const spyStderr = jest.spyOn(process.stderr, "write").mockImplementation();
@@ -106,51 +106,51 @@ test("Expand error without stack", () => {
 
 test("Add ECS fields", () => {
     const info = {level: "info", message: "lålå"};
-    FilebeatLoggerUtils.addEcsFields(info);
+    Utils.addEcsFields(info);
     expect(info).toStrictEqual({"@timestamp": "2019-05-14T11:01:58.135Z", "log.level": "info", "message": "lålå"});
 });
 
 test("Add $APP_ENV to ecs tags", () => {
     const info = {level: "info", message: "lålå"};
     process.env["APP_ENV"] = "stage";
-    FilebeatLoggerUtils.addEnvironmentTag(info);
+    Utils.addEnvironmentTag(info);
     expect(info).toStrictEqual({"level": "info", "message": "lålå", "tags": "stage"});
 });
 
 test("Add $APP_ENV to existing ecs tags", () => {
     const info = {level: "info", message: "lålå", tags: "city"};
     process.env["APP_ENV"] = "prod";
-    FilebeatLoggerUtils.addEnvironmentTag(info);
+    Utils.addEnvironmentTag(info);
     expect(info).toStrictEqual({"level": "info", "message": "lålå", "tags": "city, prod"});
 });
 
 test("JSON explode object in message", () => {
     const info = {level: "info", message: "{\"log.logger\": \"system\"}"};
-    FilebeatLoggerUtils.explodeJsonInMessage(info);
+    Utils.explodeJsonInMessage(info);
     expect(info).toStrictEqual({"level": "info", "message": "{\"log.logger\": \"system\"}", "log.logger": "system"});
 });
 
 test("Don't json explode array in message", () => {
     const info = {level: "info", message: "[{\"log.logger\": \"system\"}]"};
-    FilebeatLoggerUtils.explodeJsonInMessage(info);
+    Utils.explodeJsonInMessage(info);
     expect(info).toStrictEqual({"level": "info", "message": "[{\"log.logger\": \"system\"}]"});
 });
 
 test("Explode json, but message undefined", () => {
     const info = {level: "info"};
-    FilebeatLoggerUtils.explodeJsonInMessage(info);
+    Utils.explodeJsonInMessage(info);
     expect(info).toStrictEqual({"level": "info"});
 });
 
 test("Order keys of object", () => {
     const info = {"error.message": "Heya", level: "info", message: "Test"};
-    FilebeatLoggerUtils.orderKeys(info, ["message", "level"]);
+    Utils.orderKeys(info, ["message", "level"]);
     expect(Object.keys(info)).toStrictEqual(["message", "level", "error.message"]);
 });
 
 test("Expand request (query params)", () => {
     const info = {req: {url: "/some-path/?act=test", method: "post", headers: {host: "some-domain.com", "x-forwarded-proto": "https"}}};
-    FilebeatLoggerUtils.expandRequest(info);
+    Utils.expandRequest(info);
     expect(info).toStrictEqual({
         "http.request.method": "POST",
         "url.path": "/some-path/",
@@ -161,8 +161,14 @@ test("Expand request (query params)", () => {
     });
 });
 
+test("Expand request (no x-forwarded-proto or host header)", () => {
+    const info = {req: {url: "/", headers: {}}};
+    Utils.expandRequest(info);
+    expect(info).toStrictEqual({});
+});
+
 test("Expand response", () => {
     const info = {res: { statusCode: 200}};
-    FilebeatLoggerUtils.expandResponse(info);
+    Utils.expandResponse(info);
     expect(info).toStrictEqual({"http.response.status_code": 200});
 });
