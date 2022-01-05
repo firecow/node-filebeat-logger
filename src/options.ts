@@ -1,4 +1,4 @@
-export interface FilebeatLoggerOptions {
+export interface Options {
     logLevel?: string;
     keysOrder?: string[];
     stderrLevels?: string[];

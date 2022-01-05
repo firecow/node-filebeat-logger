@@ -1,4 +1,4 @@
-export class FilebeatLoggerUtils {
+export class Utils {
 
     static addEcsFields(info: any): void {
         info["@timestamp"] = `${new Date().toISOString()}`;
@@ -23,13 +23,17 @@ export class FilebeatLoggerUtils {
         if (!req) return;
 
         const protocol = req.headers["x-forwarded-proto"] ?? "https";
-        const url = new URL(req.url, `${protocol}://${req.headers.host}`);
-        info["url.path"] = url.pathname;
-        info["url.full"] = url.href;
-        info["url.domain"] = url.host;
-        info["url.query"] = url.search.substring(1);
-        info["url.scheme"] = url.protocol.slice(0, -1);
-        info["http.request.method"] = req.method && typeof req.method === "string" ? req.method.toUpperCase() : undefined;
+        if (req.headers["host"]) {
+            const url = new URL(req.url, `${protocol}://${req.headers.host}`);
+            info["url.path"] = url.pathname;
+            info["url.full"] = url.href;
+            info["url.domain"] = url.host;
+            info["url.query"] = url.search.substring(1);
+            info["url.scheme"] = url.protocol.slice(0, -1);
+        }
+        if (req.method && typeof req.method === "string") {
+            info["http.request.method"] = req.method.toUpperCase();
+        }
 
         delete info["request"];
         delete info["req"];
