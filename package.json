@@ -6,7 +6,7 @@
   "types": "src/index.d.ts",
   "dependencies": {
     "winston": "^3.3.3",
-    "winston-transport": "^4.4.0"
+    "winston-transport": "^4.4.1"
   },
   "scripts": {
     "prepublishOnly": "npm run depcheck && npm run build && npm run lint && npm run test",
