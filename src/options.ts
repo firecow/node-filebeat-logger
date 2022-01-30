@@ -1,6 +1,8 @@
+import * as winston from "winston";
+
 export interface Options {
     printTimestamp?: boolean;
-    logLevel?: string;
+    logLevel?: winston.level;
     keysOrder?: string[];
     stderrLevels?: string[];
     appEnvironment?: string;
