@@ -32,4 +32,5 @@ const logger = filebeatLogger.create({
 });
 
 logger.info('I am an info message')
+// {"@timestamp":"2022-01-30T14:49:00.323Z","message": "I am an info message","log.level":"info"}
 ```
