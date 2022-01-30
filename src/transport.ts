@@ -15,7 +15,10 @@ export class Transport extends WinstonTransport {
         this.stderrLevels = options.stderrLevels;
 
         this.format = format(function (info) {
-            Utils.addEcsFields(info);
+            if (options.printTimestamp) {
+                Utils.addTimestamp(info);
+            }
+            Utils.addLogLevel(info);
             Utils.addEnvironmentTag(info, options.appEnvironment);
             Utils.expandError(info);
             Utils.expandRequest(info);
