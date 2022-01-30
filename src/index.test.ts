@@ -22,28 +22,28 @@ afterAll(() => {
 test("Check logger debug default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.debug("Text Message");
-    expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"debug\"}\n");
+    expect(spyStdout).toHaveBeenLastCalledWith("{\"message\":\"Text Message\",\"log.level\":\"debug\"}\n");
     expect(spyStderr).toBeCalledTimes(0);
 });
 
 test("Check logger info default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.info("Text Message");
-    expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"info\"}\n");
+    expect(spyStdout).toHaveBeenLastCalledWith("{\"message\":\"Text Message\",\"log.level\":\"info\"}\n");
     expect(spyStderr).toBeCalledTimes(0);
 });
 
 test("Check logger warning default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.warn("Text Message");
-    expect(spyStderr).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"warn\"}\n");
+    expect(spyStderr).toHaveBeenLastCalledWith("{\"message\":\"Text Message\",\"log.level\":\"warn\"}\n");
     expect(spyStdout).toBeCalledTimes(0);
 });
 
 test("Check logger error default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.error("Text Message");
-    expect(spyStderr).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"error\"}\n");
+    expect(spyStderr).toHaveBeenLastCalledWith("{\"message\":\"Text Message\",\"log.level\":\"error\"}\n");
     expect(spyStdout).toBeCalledTimes(0);
 });
 
@@ -77,11 +77,18 @@ test("Check log level error", () => {
     expect(spyStdout).toBeCalledTimes(0);
 });
 
+test("Print Timestamp", () => {
+    const logger = create({printTimestamp: true});
+    logger.info("Text Message", {"error.message": "Heyaa"});
+    expect(spyStdout).toBeCalledTimes(1);
+    expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"info\",\"error.message\":\"Heyaa\"}\n");
+});
+
 test("Meta ordering", () => {
     const logger = create();
     logger.info("Text Message", {"error.message": "Heyaa"});
     expect(spyStdout).toBeCalledTimes(1);
-    expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"Text Message\",\"log.level\":\"info\",\"error.message\":\"Heyaa\"}\n");
+    expect(spyStdout).toHaveBeenLastCalledWith("{\"message\":\"Text Message\",\"log.level\":\"info\",\"error.message\":\"Heyaa\"}\n");
 });
 
 test("Expand meta err or error", () => {
@@ -90,7 +97,7 @@ test("Expand meta err or error", () => {
     err.stack = "Error: Test Error\nTest Stack Trace";
     logger.error("", {err});
     expect(spyStderr).toBeCalledTimes(1);
-    const expected = "{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"\",\"log.level\":\"error\",\"error.message\":\"Test Error\",\"error.stack_trace\":\"Error: Test Error\\nTest Stack Trace\"}\n";
+    const expected = "{\"message\":\"\",\"log.level\":\"error\",\"error.message\":\"Test Error\",\"error.stack_trace\":\"Error: Test Error\\nTest Stack Trace\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
 
@@ -100,14 +107,20 @@ test("Expand error without stack", () => {
     delete err.stack;
     logger.error("", {err});
     expect(spyStderr).toBeCalledTimes(1);
-    const expected = "{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"message\":\"\",\"log.level\":\"error\",\"error.message\":\"Test Error\"}\n";
+    const expected = "{\"message\":\"\",\"log.level\":\"error\",\"error.message\":\"Test Error\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
 
-test("Add ECS fields", () => {
+test("Add @timestamp", () => {
+    const info = {message: "lålå"};
+    Utils.addTimestamp(info);
+    expect(info).toStrictEqual({"@timestamp": "2019-05-14T11:01:58.135Z", "message": "lålå"});
+});
+
+test("Add Log Level", () => {
     const info = {level: "info", message: "lålå"};
-    Utils.addEcsFields(info);
-    expect(info).toStrictEqual({"@timestamp": "2019-05-14T11:01:58.135Z", "log.level": "info", "message": "lålå"});
+    Utils.addLogLevel(info);
+    expect(info).toStrictEqual({"log.level": "info", "message": "lålå"});
 });
 
 test("Add $APP_ENV to ecs tags", () => {

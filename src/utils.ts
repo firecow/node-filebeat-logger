@@ -1,7 +1,10 @@
 export class Utils {
 
-    static addEcsFields(info: any): void {
+    static addTimestamp(info: any): void {
         info["@timestamp"] = `${new Date().toISOString()}`;
+    }
+
+    static addLogLevel(info: any): void {
         info["log.level"] = info["level"];
         delete info["level"];
     }
