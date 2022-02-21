@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "dependencies": {
-    "winston": "^3.5.0",
+    "winston": "^3.5.1",
     "winston-transport": "^4.4.2"
   },
   "scripts": {
