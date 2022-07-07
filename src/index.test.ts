@@ -48,7 +48,7 @@ test("Check logger error default streams", () => {
 });
 
 test("Check log level info", () => {
-    const logger = create({});
+    const logger = create();
     logger.debug("Text Message");
     logger.info("Text Message");
     logger.warn("Text Message");
