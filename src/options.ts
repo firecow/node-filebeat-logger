@@ -8,8 +8,8 @@ export interface Options {
 
 export function optionDefaults(): { printTimestamp: boolean; keysOrder: string[]; stderrLevels: string[]; appEnvironment: string | undefined } {
     return {
-        printTimestamp: false,
-        keysOrder: ["@timestamp", "message", "log.level"],
+        printTimestamp: true,
+        keysOrder: ["@timestamp", "log.level", "message"],
         stderrLevels: ["error", "warn", "warning"],
         appEnvironment: process.env["APP_ENV"],
     };
