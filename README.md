@@ -26,8 +26,8 @@ npm install --save filebeat-logger
 const filebeatLogger = require('filebeat-logger')
 const logger = filebeatLogger.create({
     logLevel: 'debug', // 'info' by default
-    printTimestamp: true, // false by default
-    keysOrder: ['@timestamp', 'message'], // ["@timestamp", "message", "log.level"] by default
+    printTimestamp: false, // true by default
+    keysOrder: ['@timestamp', 'message'], // ["@timestamp", "log.level", "message"] by default
     stderrLevels: ['warn', 'error'], // ["error", "warn", "warning"] by default
 });
 
