@@ -1,7 +1,9 @@
 {
   "extends": [
     "config:base",
-    ":preserveSemverRanges",
-    ":disableDependencyDashboard"
+    ":disableDependencyDashboard",
+    ":automergeAll",
+    ":automergeBranch"
+    ":preserveSemverRanges"
   ]
 }
