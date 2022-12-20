@@ -1,6 +1,6 @@
 A winston logger that prints json lines in elastic common schema format
 
-[![build](https://img.shields.io/github/workflow/status/firecow/node-filebeat-logger/build)](https://github.com/firecow/node-filebeat-logger/actions)
+[![build](https://img.shields.io/github/actions/workflow/status/firecow/node-filebeat-logger/build.yml?branch=main)](https://github.com/firecow/node-filebeat-logger/actions)
 [![Known Vulnerabilities](https://snyk.io/test/github/firecow/node-filebeat-logger/badge.svg)](https://snyk.io/test/github/firecow/node-filebeat-logger)
 [![npm](https://img.shields.io/npm/v/filebeat-logger)](https://npmjs.org/package/filebeat-logger)
 [![license](https://img.shields.io/github/license/firecow/node-filebeat-logger)](https://npmjs.org/package/filebeat-logger)
