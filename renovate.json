@@ -4,7 +4,8 @@
     ":disableDependencyDashboard",
     ":automergeAll",
     ":automergeBranch",
-    ":preserveSemverRanges"
+    ":preserveSemverRanges",
+    ":maintainLockFilesWeekly"
   ],
   "recreateWhen": "always"
 }
