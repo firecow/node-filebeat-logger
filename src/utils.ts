@@ -16,6 +16,10 @@ export class Utils {
             if (err.stack) {
                 info["error.stack_trace"] = err.stack;
             }
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            info["error.code"] = err.code;
+            info["error.type"] = typeof err;
             delete info["error"];
             delete info["err"];
         }
