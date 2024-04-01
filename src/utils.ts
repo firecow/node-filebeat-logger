@@ -25,8 +25,8 @@ export class Utils {
         const req: any = info["request"] || info["req"];
         if (!req) return;
 
-        const protocol = req.headers["x-forwarded-proto"] ?? "https";
-        if (req.headers["host"]) {
+        if (req.headers) {
+            const protocol = (req.protocol ?? req.headers["x-forwarded-proto"] ?? "https").replace(":", "");
             const url = new URL(req.url, `${protocol}://${req.headers.host}`);
             info["url.path"] = url.pathname;
             info["url.full"] = url.href;

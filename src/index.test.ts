@@ -175,7 +175,7 @@ test("Expand request (query params)", () => {
 });
 
 test("Expand request (no x-forwarded-proto or host header)", () => {
-    const info = {req: {url: "/", headers: {}}};
+    const info = {req: {url: "/"}};
     Utils.expandRequest(info);
     expect(info).toStrictEqual({});
 });
