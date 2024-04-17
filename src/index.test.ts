@@ -126,7 +126,7 @@ test("Expand error without stack", () => {
     delete err.stack;
     logger.error("", {err});
     expect(spyStderr).toBeCalledTimes(1);
-    const expected = "{\"log.level\":\"error\",\"message\":\"\",\"error.message\":\"Test Error\"}\n";
+    const expected = "{\"log.level\":\"error\",\"message\":\"\",\"error.message\":\"Test Error\",\"error.type\":\"Error\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
 
