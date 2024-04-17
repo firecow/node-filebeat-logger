@@ -15,7 +15,7 @@ export class Utils {
         info["error.message"] = err.message;
         info["error.stack_trace"] = err.stack;
         info["error.type"] = err.name;
-        info["error.code"] = err.code;
+        info["error.code"] = String(err.code);
 
         delete info["error"];
         delete info["err"];

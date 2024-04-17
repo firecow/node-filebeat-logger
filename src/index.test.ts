@@ -93,11 +93,30 @@ test("Meta ordering", () => {
 
 test("Expand meta err or error", () => {
     const logger = create({printTimestamp: false, logLevel: "error"});
-    const err = new Error("Test Error");
-    err.stack = "Error: Test Error\nTest Stack Trace";
-    logger.error("", {err});
+    const err = {
+        message: "Test Error",
+        code: "ECONNRESET",
+        name: "FastifyError",
+        stack: "Error: Test Error\nTest Stack Trace",
+        fieldToRemove: "",
+    };
+
+    logger.error("HulaHop", {err});
     expect(spyStderr).toBeCalledTimes(1);
-    const expected = "{\"log.level\":\"error\",\"message\":\"\",\"error.message\":\"Test Error\",\"error.stack_trace\":\"Error: Test Error\\nTest Stack Trace\"}\n";
+    const expected = "{\"log.level\":\"error\",\"message\":\"HulaHop\",\"error.message\":\"Test Error\",\"error.stack_trace\":\"Error: Test Error\\nTest Stack Trace\",\"error.type\":\"FastifyError\",\"error.code\":\"ECONNRESET\"}\n";
+    expect(spyStderr).toHaveBeenLastCalledWith(expected);
+});
+
+test("Expand meta err with fields missing", () => {
+    const logger = create({printTimestamp: false, logLevel: "error"});
+    const err = {
+        message: "Test Error",
+        name: "FastifyError",
+    };
+
+    logger.error("HulaHop", {err});
+    expect(spyStderr).toBeCalledTimes(1);
+    const expected = "{\"log.level\":\"error\",\"message\":\"HulaHop\",\"error.message\":\"Test Error\",\"error.type\":\"FastifyError\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
 
