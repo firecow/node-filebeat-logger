@@ -12,13 +12,17 @@ export class Utils {
     static expandError(info: any): void {
         const err: any = info["error"] || info["err"];
 
-        info["error.message"] = err.message;
-        info["error.stack_trace"] = err.stack;
-        info["error.type"] = err.name;
-        info["error.code"] = String(err.code);
+        if (err) {
+            info["error.message"] = err.message;
+            info["error.stack_trace"] = err.stack;
+            info["error.type"] = err.name;
+            if (err.code) {
+                info["error.code"] = String(err.code);
+            }
 
-        delete info["error"];
-        delete info["err"];
+            delete info["error"];
+            delete info["err"];
+        }
     }
 
     static expandRequest(info: any): void {
