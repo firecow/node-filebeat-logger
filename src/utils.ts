@@ -10,15 +10,15 @@ export class Utils {
     }
 
     static expandError(info: any): void {
-        const err: unknown = info["error"] || info["err"];
-        if (err instanceof Error) {
-            info["error.message"] = err.message;
-            if (err.stack) {
-                info["error.stack_trace"] = err.stack;
-            }
-            delete info["error"];
-            delete info["err"];
-        }
+        const err: any = info["error"] || info["err"];
+
+        info["error.message"] = err.message;
+        info["error.stack_trace"] = err.stack;
+        info["error.type"] = err.name;
+        info["error.code"] = err.code;
+
+        delete info["error"];
+        delete info["err"];
     }
 
     static expandRequest(info: any): void {
