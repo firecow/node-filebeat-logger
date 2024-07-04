@@ -19,6 +19,12 @@ export class Utils {
             if (err.code) {
                 info["error.code"] = String(err.code);
             }
+            if (err.errno) {
+                info["error.errno"] = String(err.errno);
+            }
+            if (err.syscall) {
+                info["error.syscall"] = String(err.syscall);
+            }
 
             delete info["error"];
             delete info["err"];
