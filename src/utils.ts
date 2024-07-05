@@ -10,12 +10,22 @@ export class Utils {
     }
 
     static expandError(info: any): void {
-        const err: unknown = info["error"] || info["err"];
-        if (err instanceof Error) {
+        const err: any = info["error"] || info["err"];
+
+        if (err) {
             info["error.message"] = err.message;
-            if (err.stack) {
-                info["error.stack_trace"] = err.stack;
+            info["error.stack_trace"] = err.stack;
+            info["error.type"] = err.name;
+            if (err.code) {
+                info["error.code"] = String(err.code);
             }
+            if (err.errno) {
+                info["error.errno"] = String(err.errno);
+            }
+            if (err.syscall) {
+                info["error.syscall"] = String(err.syscall);
+            }
+
             delete info["error"];
             delete info["err"];
         }
