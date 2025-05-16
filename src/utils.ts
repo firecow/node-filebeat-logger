@@ -25,7 +25,13 @@ export class Utils {
             if (err.syscall) {
                 info["error.syscall"] = String(err.syscall);
             }
-
+            if (err.cause?.code) {
+                info["error.cause.code"] = err.cause.code;
+            }
+            if (err.cause?.hostname) {
+                info["error.cause.hostname"] = err.cause.hostname;
+            }
+            
             delete info["error"];
             delete info["err"];
         }
