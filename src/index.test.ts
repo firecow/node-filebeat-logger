@@ -1,11 +1,10 @@
+import {afterAll, afterEach, expect, test, vi} from "vitest";
 import {Utils} from "./utils";
-
-import MockDate from "mockdate";
 import {create} from "./factory";
 
-const spyStdout = jest.spyOn(process.stdout, "write").mockImplementation();
-const spyStderr = jest.spyOn(process.stderr, "write").mockImplementation();
-MockDate.set("2019-05-14T11:01:58.135Z");
+const spyStdout = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+const spyStderr = vi.spyOn(process.stderr, "write").mockReturnValue(true);
+vi.setSystemTime("2019-05-14T11:01:58.135Z");
 
 afterEach(() => {
     spyStdout.mockClear();
@@ -15,7 +14,7 @@ afterEach(() => {
 afterAll(() => {
     spyStdout.mockRestore();
     spyStderr.mockRestore();
-    MockDate.reset();
+    vi.useRealTimers();
 });
 
 
@@ -23,28 +22,28 @@ test("Check logger debug default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.debug("Text Message");
     expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"log.level\":\"debug\",\"message\":\"Text Message\"}\n");
-    expect(spyStderr).toBeCalledTimes(0);
+    expect(spyStderr).toHaveBeenCalledTimes(0);
 });
 
 test("Check logger info default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.info("Text Message");
     expect(spyStdout).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"log.level\":\"info\",\"message\":\"Text Message\"}\n");
-    expect(spyStderr).toBeCalledTimes(0);
+    expect(spyStderr).toHaveBeenCalledTimes(0);
 });
 
 test("Check logger warning default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.warn("Text Message");
     expect(spyStderr).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"log.level\":\"warn\",\"message\":\"Text Message\"}\n");
-    expect(spyStdout).toBeCalledTimes(0);
+    expect(spyStdout).toHaveBeenCalledTimes(0);
 });
 
 test("Check logger error default streams", () => {
     const logger = create({logLevel: "debug"});
     logger.error("Text Message");
     expect(spyStderr).toHaveBeenLastCalledWith("{\"@timestamp\":\"2019-05-14T11:01:58.135Z\",\"log.level\":\"error\",\"message\":\"Text Message\"}\n");
-    expect(spyStdout).toBeCalledTimes(0);
+    expect(spyStdout).toHaveBeenCalledTimes(0);
 });
 
 test("Check log level info", () => {
@@ -53,8 +52,8 @@ test("Check log level info", () => {
     logger.info("Text Message");
     logger.warn("Text Message");
     logger.error("Text Message");
-    expect(spyStderr).toBeCalledTimes(2);
-    expect(spyStdout).toBeCalledTimes(1);
+    expect(spyStderr).toHaveBeenCalledTimes(2);
+    expect(spyStdout).toHaveBeenCalledTimes(1);
 });
 
 test("Check log level warn", () => {
@@ -63,8 +62,8 @@ test("Check log level warn", () => {
     logger.info("Text Message");
     logger.warn("Text Message");
     logger.error("Text Message");
-    expect(spyStderr).toBeCalledTimes(2);
-    expect(spyStdout).toBeCalledTimes(0);
+    expect(spyStderr).toHaveBeenCalledTimes(2);
+    expect(spyStdout).toHaveBeenCalledTimes(0);
 });
 
 test("Check log level error", () => {
@@ -73,21 +72,21 @@ test("Check log level error", () => {
     logger.info("Text Message");
     logger.warn("Text Message");
     logger.error("Text Message");
-    expect(spyStderr).toBeCalledTimes(1);
-    expect(spyStdout).toBeCalledTimes(0);
+    expect(spyStderr).toHaveBeenCalledTimes(1);
+    expect(spyStdout).toHaveBeenCalledTimes(0);
 });
 
 test("Print Timestamp", () => {
     const logger = create({printTimestamp: false});
     logger.info("Text Message", {"error.message": "Heyaa"});
-    expect(spyStdout).toBeCalledTimes(1);
+    expect(spyStdout).toHaveBeenCalledTimes(1);
     expect(spyStdout).toHaveBeenLastCalledWith("{\"log.level\":\"info\",\"message\":\"Text Message\",\"error.message\":\"Heyaa\"}\n");
 });
 
 test("Meta ordering", () => {
     const logger = create({printTimestamp: false});
     logger.info("Text Message", {"error.message": "Heyaa"});
-    expect(spyStdout).toBeCalledTimes(1);
+    expect(spyStdout).toHaveBeenCalledTimes(1);
     expect(spyStdout).toHaveBeenLastCalledWith("{\"log.level\":\"info\",\"message\":\"Text Message\",\"error.message\":\"Heyaa\"}\n");
 });
 
@@ -102,7 +101,7 @@ test("Expand meta err or error", () => {
     };
 
     logger.error("HulaHop", {err});
-    expect(spyStderr).toBeCalledTimes(1);
+    expect(spyStderr).toHaveBeenCalledTimes(1);
     const expected = "{\"log.level\":\"error\",\"message\":\"HulaHop\",\"error.message\":\"Test Error\",\"error.stack_trace\":\"Error: Test Error\\nTest Stack Trace\",\"error.type\":\"FastifyError\",\"error.code\":\"ECONNRESET\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
@@ -115,7 +114,7 @@ test("Expand meta err with fields missing", () => {
     };
 
     logger.error("HulaHop", {err});
-    expect(spyStderr).toBeCalledTimes(1);
+    expect(spyStderr).toHaveBeenCalledTimes(1);
     const expected = "{\"log.level\":\"error\",\"message\":\"HulaHop\",\"error.message\":\"Test Error\",\"error.type\":\"FastifyError\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
@@ -125,7 +124,7 @@ test("Expand error without stack", () => {
     const err = new Error("Test Error");
     delete err.stack;
     logger.error("", {err});
-    expect(spyStderr).toBeCalledTimes(1);
+    expect(spyStderr).toHaveBeenCalledTimes(1);
     const expected = "{\"log.level\":\"error\",\"message\":\"\",\"error.message\":\"Test Error\",\"error.type\":\"Error\"}\n";
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });

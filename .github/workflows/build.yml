@@ -62,7 +62,7 @@ jobs:
       - name: Run depcheck
         run: npm run depcheck
 
-  jest:
+  vitest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
