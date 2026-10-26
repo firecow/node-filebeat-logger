@@ -106,6 +106,22 @@ test("Expand meta err or error", () => {
     expect(spyStderr).toHaveBeenLastCalledWith(expected);
 });
 
+test("Expand meta err with errno, syscall and cause", () => {
+    const logger = create({printTimestamp: false, logLevel: "error"});
+    const err = {
+        message: "connect ECONNREFUSED",
+        name: "Error",
+        errno: -111,
+        syscall: "connect",
+        cause: {code: "ENOTFOUND", hostname: "elastic.example"},
+    };
+
+    logger.error("HulaHop", {err});
+    expect(spyStderr).toHaveBeenCalledTimes(1);
+    const expected = "{\"log.level\":\"error\",\"message\":\"HulaHop\",\"error.message\":\"connect ECONNREFUSED\",\"error.type\":\"Error\",\"error.errno\":\"-111\",\"error.syscall\":\"connect\",\"error.cause.code\":\"ENOTFOUND\",\"error.cause.hostname\":\"elastic.example\"}\n";
+    expect(spyStderr).toHaveBeenLastCalledWith(expected);
+});
+
 test("Expand meta err with fields missing", () => {
     const logger = create({printTimestamp: false, logLevel: "error"});
     const err = {
