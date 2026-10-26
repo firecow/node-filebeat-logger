@@ -1,4 +1,4 @@
-import * as WinstonTransport from "winston-transport";
+import WinstonTransport from "winston-transport";
 import {format} from "winston";
 import {Utils} from "./utils";
 import {Options, optionDefaults} from "./options";

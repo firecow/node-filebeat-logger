@@ -85,7 +85,7 @@ export class Utils {
                     info[key] = exploded[key];
                 });
             }
-        } catch (e) {
+        } catch {
             // JSON parse fails, therefore message cannot be exploded, carry on
         }
     }
